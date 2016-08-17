@@ -2,12 +2,21 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 
 class Question extends Component{
-	onChange(){
-		return;
+	onChange(e){
+		e.preventDefault();
+		const {setCurrent, setScore, question} = this.props;
+
+		let selected = e.target.value;
+
+		if(selected == question.correct){
+			setScore(this.props.score + 1);
+		}
+		setCurrent(this.props.current + 1);
 	}
 
 	render(){
 		const {question} = this.props;
+		console.log(this.props);
 		return(
 			<div className="well">
 				<h3>{question.text}</h3>

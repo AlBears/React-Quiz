@@ -19725,6 +19725,8 @@
 		value: true
 	});
 
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
@@ -19746,6 +19748,14 @@
 	var _quizQuestionListJsx = __webpack_require__(161);
 
 	var _quizQuestionListJsx2 = _interopRequireDefault(_quizQuestionListJsx);
+
+	var _quizScoreBoxJsx = __webpack_require__(163);
+
+	var _quizScoreBoxJsx2 = _interopRequireDefault(_quizScoreBoxJsx);
+
+	var _quizResultsJsx = __webpack_require__(164);
+
+	var _quizResultsJsx2 = _interopRequireDefault(_quizResultsJsx);
 
 	var App = (function (_Component) {
 		_inherits(App, _Component);
@@ -19818,12 +19828,31 @@
 		}
 
 		_createClass(App, [{
+			key: 'setCurrent',
+			value: function setCurrent(current) {
+				this.setState({ current: current });
+			}
+		}, {
+			key: 'setScore',
+			value: function setScore(score) {
+				this.setState({ score: score });
+			}
+		}, {
 			key: 'render',
 			value: function render() {
+				if (this.state.current > this.state.questions.length) {
+					var scorebox = '';
+					var results = _react2['default'].createElement(_quizResultsJsx2['default'], this.state);
+				} else {
+					var scorebox = _react2['default'].createElement(_quizScoreBoxJsx2['default'], this.state);
+					var results = '';
+				}
 				return _react2['default'].createElement(
 					'div',
 					null,
-					_react2['default'].createElement(_quizQuestionListJsx2['default'], this.state)
+					scorebox,
+					_react2['default'].createElement(_quizQuestionListJsx2['default'], _extends({}, this.state, { setCurrent: this.setCurrent.bind(this), setScore: this.setScore.bind(this) })),
+					results
 				);
 			}
 		}]);
@@ -19886,7 +19915,9 @@
 					'div',
 					{ className: 'questions' },
 					this.props.questions.map(function (question) {
-						return _react2['default'].createElement(_QuestionJsx2['default'], _extends({ question: question, key: question.id }, _this.props));
+						if (question.id == _this.props.current) {
+							return _react2['default'].createElement(_QuestionJsx2['default'], _extends({ question: question, key: question.id }, _this.props));
+						}
 					})
 				);
 			}
@@ -19937,8 +19968,19 @@
 
 		_createClass(Question, [{
 			key: 'onChange',
-			value: function onChange() {
-				return;
+			value: function onChange(e) {
+				e.preventDefault();
+				var _props = this.props;
+				var setCurrent = _props.setCurrent;
+				var setScore = _props.setScore;
+				var question = _props.question;
+
+				var selected = e.target.value;
+
+				if (selected == question.correct) {
+					setScore(this.props.score + 1);
+				}
+				setCurrent(this.props.current + 1);
 			}
 		}, {
 			key: 'render',
@@ -19947,6 +19989,7 @@
 
 				var question = this.props.question;
 
+				console.log(this.props);
 				return _react2['default'].createElement(
 					'div',
 					{ className: 'well' },
@@ -19979,6 +20022,156 @@
 	})(_react.Component);
 
 	exports['default'] = Question;
+	module.exports = exports['default'];
+
+/***/ },
+/* 163 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+		value: true
+	});
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactDom = __webpack_require__(159);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
+	var Scorebox = (function (_Component) {
+		_inherits(Scorebox, _Component);
+
+		function Scorebox() {
+			_classCallCheck(this, Scorebox);
+
+			_get(Object.getPrototypeOf(Scorebox.prototype), 'constructor', this).apply(this, arguments);
+		}
+
+		_createClass(Scorebox, [{
+			key: 'render',
+			value: function render() {
+				return _react2['default'].createElement(
+					'div',
+					{ className: 'well' },
+					'Question ',
+					this.props.current,
+					' out of ',
+					this.props.questions.length,
+					_react2['default'].createElement(
+						'span',
+						{ className: 'pull-right' },
+						_react2['default'].createElement(
+							'strong',
+							null,
+							'Score: ',
+							this.props.score
+						)
+					)
+				);
+			}
+		}]);
+
+		return Scorebox;
+	})(_react.Component);
+
+	exports['default'] = Scorebox;
+	module.exports = exports['default'];
+
+/***/ },
+/* 164 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+		value: true
+	});
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactDom = __webpack_require__(159);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
+	var Results = (function (_Component) {
+		_inherits(Results, _Component);
+
+		function Results() {
+			_classCallCheck(this, Results);
+
+			_get(Object.getPrototypeOf(Results.prototype), 'constructor', this).apply(this, arguments);
+		}
+
+		_createClass(Results, [{
+			key: 'render',
+			value: function render() {
+				var percent = this.props.score / this.props.questions.length * 100;
+				if (percent > 80) {
+					var message = 'Awesome Job!';
+				} else if (percent < 80 && percent > 60) {
+					var message = 'You Did Ok!';
+				} else {
+					var message = 'You Can Do Better!';
+				}
+				return _react2['default'].createElement(
+					'div',
+					{ className: 'well' },
+					_react2['default'].createElement(
+						'h4',
+						null,
+						'You Got ',
+						this.props.score,
+						' out of ',
+						this.props.questions.length,
+						' Correct'
+					),
+					_react2['default'].createElement(
+						'h1',
+						null,
+						percent,
+						'% - ',
+						message
+					),
+					_react2['default'].createElement('hr', null),
+					_react2['default'].createElement(
+						'a',
+						{ href: '/app' },
+						'Take Again '
+					)
+				);
+			}
+		}]);
+
+		return Results;
+	})(_react.Component);
+
+	exports['default'] = Results;
 	module.exports = exports['default'];
 
 /***/ }
